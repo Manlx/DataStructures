@@ -58,32 +58,123 @@ class LinkedList:
         return not(bLooking)
     
     def SortASC(self):
-        Start = self.HEAD
-        while(not(Start == self.TAIL )):
-            Iter = Start    
-            if (Iter.Value > Iter.Next.Value):
-                Temp = Iter.Value
-                Iter.Value = Iter.Next.Value
-                Iter.Next.Value = Temp
-            Start = Start.Next
+        Sel = self.HEAD;
+        while(not(Sel.Next == 0)):
+            X = Sel.Next
+            while (not(X == 0)):
+                if  (Sel.Value > X.Value):
+                    Temp = X.Value;
+                    X.Value = Sel.Value
+                    Sel.Value = Temp
+                X = X.Next
+            Sel = Sel.Next        
             
     def SortDESC(self):
-        print()
-        
-Thing = LinkedList()
-Thing.AddValue(1)
-Thing.AddValue(2)
-Thing.AddValue(3)
-Thing.AddValue(4)
-Thing.AddValue(5)
-Thing.AddValue(8)
-Thing.AddValue(7)
-Thing.AddValue(6)
-print(str(Thing.GetValueAt(0)))
-print(Thing.toString())
-print(Thing.toStringBack())
-print(Thing.Contains(6))
-print(Thing.Contains(5))
+        Sel = self.HEAD;
+        while(not(Sel.Next == 0)):
+            X = Sel.Next
+            while (not(X == 0)):
+                if  (Sel.Value < X.Value):
+                    Temp = X.Value;
+                    X.Value = Sel.Value
+                    Sel.Value = Temp
+                X = X.Next
+            Sel = Sel.Next
 
-print(Thing.SortASC())
+    def CutNode(Node):
+        if not(bool(Node.Previous) or bool(Node.Next)):
+            return Node
+        if not(bool(Node.Previous)):
+            Node.Next.Previous = 0
+            Node.Next = 0
+            return Node
+        if not(bool(Node.Next)):
+            Node.Previous.Next = 0
+            Node.Previous = 0
+            return Node
+        if (bool(Node.Next) and bool(Node.Previous)):
+            Node.Previous.Next = Node.Next
+            Node.Next.Previous = Node.Previous
+            Node.Next = 0
+            Node.Previous = 0
+            return Node
+        
+    def InsertNodeAfter(Node,Target):
+        if bool(Target.Next):
+            Temp = Target.Next
+            Target.Next = Node
+            Node.Previous = Target
+            Node.Next = Temp
+            Temp.Previous = Node
+        
+    def SelectSort(self):
+        HeadOSort = self.HEAD;
+        while bool(HeadOSort.Next):
+            Sel = HeadOSort.Next;
+            if (HeadOSort.Value <= Sel.Value ):
+                HeadOSort = Sel
+            elif (self.HEAD.Value > Sel.Value):
+                LinkedList.CutNode(Sel)
+                self.HEAD.Previous = Sel
+                Sel.Next = self.HEAD
+                self.HEAD = Sel
+            else:
+                Sorted = HeadOSort
+                while (Sorted.Value>Sel.Value):
+                    Sorted = Sorted.Previous
+                LinkedList.CutNode(Sel)
+                LinkedList.InsertNodeAfter(Sel,Sorted)
+
+    def DeleteAt(self, Index):
+        if(Index == 0):
+            self.HEAD = self.HEAD.Next;
+            return True
+        
+        Targ = self.HEAD
+        I = 0
+        while (I < Index and bool(Targ)):
+            I += 1
+            Targ = Targ.Next
+        if (bool(Targ)):
+            if (Targ == self.TAIL):
+                self.TAIL = self.TAIL.Previous
+                self.TAIL.Next = 0
+                return False
+            Targ.Previous.Next = Targ.Next
+            Targ.Next.Previous = Targ.Previous
+            return True
+        return False
+
+    def Delete(self,Value):
+        if (self.HEAD.Value == Value):
+            self.HEAD = self.HEAD.Next
+            return True
+        if (self.TAIL.Value == Value):
+            self.TAIL = self.TAIL.Previous
+            self.TAIL.Next = 0
+            return True
+        
+        Targ = self.HEAD
+        bFound = False
+        while (not(Targ.Value == Value)):
+            Targ = Targ.Next
+        bFound = Targ.Value == Value
+        if (bFound):
+            Targ.Previous.Next = Targ.Next
+            Targ.Next.Previous = Targ.Previous
+        return bFound
+    
+Thing = LinkedList()
+Thing.AddValue(8)
+Thing.AddValue(1)
+Thing.AddValue(9)
+Thing.AddValue(4)
+Thing.AddValue(3)
+Thing.AddValue(5)
+Thing.AddValue(7)
+Thing.AddValue(9)
+Thing.AddValue(6)
+
+print(Thing.toString())
+Thing.SelectSort()
 print(Thing.toString())
